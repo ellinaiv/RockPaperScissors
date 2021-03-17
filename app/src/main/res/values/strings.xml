@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RockPaperScissors</string>
+    <string name="btn_start">Join the game</string>
+    <string name="play_against_the_device">Play against the device</string>
 </resources>

@@ -40,8 +40,7 @@ WIFI_P2P_CONNECTION_CHANGED_ACTION </br>
 WIFI_P2P_THIS_DEVICE_CHANGED_ACTION </br>
 ```
 
-
-
+[Resource]( https://developer.android.com/training/connect-devices-wirelessly/wifi-direct "Developer.android")
  
 
 
