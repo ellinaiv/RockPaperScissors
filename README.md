@@ -28,13 +28,12 @@ Set up: </br>
         android:name="android.permission.INTERNET"/>
 ```
 
-2. BroadcastReceiver <\br>
+2. BroadcastReceiver </br>
 Needed to listen to broadcast intents </br>
 To enable this functionality: </br>
  instantiate IntentFilter </br>
-    1. set it to listen for the following </br>`
-
-``
+    1. set it to listen for the following </br>
+```
 WIFI_P2P_STATE_CHANGED_ACTION </br>
 WIFI_P2P_PEERS_CHANGED_ACTION </br>
 WIFI_P2P_CONNECTION_CHANGED_ACTION </br>
