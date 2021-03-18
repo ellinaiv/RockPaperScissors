@@ -14,19 +14,9 @@ Set up Firebase: </br>
 https://console.firebase.google.com/u/0/project/_/database
 ```
 
-2. BroadcastReceiver </br>
-Needed to listen to broadcast intents </br>
-To enable this functionality: </br>
- instantiate IntentFilter </br>
-    1. set it to listen for the following </br>
-```
-WIFI_P2P_STATE_CHANGED_ACTION </br>
-WIFI_P2P_PEERS_CHANGED_ACTION </br>
-WIFI_P2P_CONNECTION_CHANGED_ACTION </br>
-WIFI_P2P_THIS_DEVICE_CHANGED_ACTION </br>
-```
 
-[Resource]( https://developer.android.com/training/connect-devices-wirelessly/wifi-direct "Developer.android")
+
+[Read more about firebase]( https://console.firebase.google.com/ )
  
 
 

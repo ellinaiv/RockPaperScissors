@@ -26,9 +26,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,18 +42,24 @@ public class MainActivity extends AppCompatActivity {
     final int SCISSORS = 1;
     final int PAPER = 2;
 
-
     ImageView clickedBtn;
     ImageView deviceBtn;
 
     int userChoice;
+    int currentNrOfPlayers;
 
-    DocumentReference database;
+    DocumentReference databasePlayers;
+    DocumentReference databaseChoices;
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    String lastUpdate;
-    DocumentSnapshot updatedSnapshot;
+    String lastUpdatePlayers;
+    DocumentSnapshot updatedSnapshotPlayers;
 
+    String lastUpdateChoices;
+    DocumentSnapshot updatedSnapshotChoices;
+
+    String msgWinner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        database = db.collection("game").document("players");
-
-        database.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        databasePlayers = db.collection("game").document("players");
+        databasePlayers.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
@@ -69,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    lastUpdate = snapshot.toString();
-                    updatedSnapshot = snapshot;
-                    Log.d("Listen to updates", "Current data: " + snapshot.getData().toString());
+                    lastUpdatePlayers = snapshot.toString();
+                    updatedSnapshotPlayers = snapshot;
+                    // Log.d("Listen to updates", "Current data: " + snapshot.getData().toString());
                     notifyNewJoined(snapshot);
                 } else {
                     Log.d("Listen to updates", "Current data: null");
@@ -80,20 +89,68 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        databaseChoices = db.collection("game").document("choices");
+        databaseChoices.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Listen to updates", "Listen failed.", e);
+                    return;
+                }
 
+                if (snapshot != null && snapshot.exists()) {
+                    lastUpdateChoices = snapshot.toString();
+                    updatedSnapshotChoices = snapshot;
+                    Log.d("Listen to updates", "Current moves data: " + snapshot.getData().toString());
+                    notifyPlayerMoved(snapshot);
+                } else {
+                    Log.d("Listen to updates", "Current moves data: null");
+                }
+            }
+        });
     }
 
     public void notifyNewJoined(DocumentSnapshot update) {
         Log.d("Notify new join", "Current data: " + update);
-        Map data = updatedSnapshot.getData();
-
-        if ( data.size() == 0 ) return;
+        Map data = updatedSnapshotPlayers.getData();
+        currentNrOfPlayers = data.size();
+        Log.d("Players ", Integer.toString(data.size()));
+        if (data.size() == 0) return;
 
         String msg = "Players in the game ";
-        for (Object player : data.keySet()){
+        for (Object player : data.keySet()) {
             msg += " " + player + " ";
         }
         makeToast(msg);
+    }
+
+    public void notifyPlayerMoved(DocumentSnapshot update) {
+        Log.d("A player moved ", "Current data: " + update);
+        Map data = updatedSnapshotChoices.getData();
+        Log.d("Number of moves ", Integer.toString(data.size()));
+        Log.d("Moves", data.toString());
+
+        int currentNrOfMoves = data.size();
+
+        if (currentNrOfMoves == 0) return;
+
+        if ((currentNrOfMoves == currentNrOfPlayers) && currentNrOfPlayers > 1) {
+            HashMap<String, Integer> moves = new HashMap<String, Integer>();
+
+            Set keys = data.keySet();
+
+            for (Object key : keys) {
+                if (userName != null && !key.toString().contains(userName)) {
+                    String value = data.get(key).toString().replaceAll("[^0-2]", "");
+                    int valueInt = Integer.parseInt(value);
+                    moves.put(key.toString(), valueInt);
+                }
+            }
+
+            findWinner(moves);
+
+        }
 
 
     }
@@ -135,6 +192,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void updateChoice(String choice) {
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("move", choice);
+
+        Map<String, Object> newEntry = new HashMap<>();
+        newEntry.put(userName, data);
+        db.collection("game").document("choices").set(newEntry, SetOptions.merge());
+
+
+        DocumentReference docRef = db.collection("game").document("choices");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("onComplete", "DocumentSnapshot data: " + document.getData());
+
+                    } else {
+                        Log.d("onComplete", "No such document");
+                    }
+                } else {
+                    Log.d("onComplete", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 
     public void startGame(View view) {
 
@@ -145,10 +230,10 @@ public class MainActivity extends AppCompatActivity {
         if (userName.length() == 0) {
             Toast toast = Toast.makeText(this, "Please enter you name first", Toast.LENGTH_LONG);
             toast.show();
-        } else if (lastUpdate.contains(userName)) {
+        } else if (lastUpdatePlayers != null && lastUpdatePlayers.contains(userName)) {
             makeToast("This username is taken, please choose another one!");
 
-        }else {
+        } else {
             player.setFocusable(false);
             player.setEnabled(false);
 
@@ -211,12 +296,60 @@ public class MainActivity extends AppCompatActivity {
         if (checkBox.isChecked()) {
             playAgainstDevice();
         } else {
-
-
+            updateChoice(Integer.toString(userChoice));
         }
 
     }
 
+    public void findWinner(Map data) {
+
+
+        Set keys = data.keySet();
+        Collection values = data.values();
+        ArrayList<Integer> valuesList = new ArrayList<Integer>(values);
+
+        int winnerI = 0;
+        for (int i = 0; i < data.size() - 1; i++) {
+            winnerI = playTwo(valuesList.get(winnerI), valuesList.get(i++), winnerI, i++);
+        }
+
+        if (valuesList.get(winnerI) == userChoice) {
+            makeToast("No one wins!");
+        } else {
+            winnerI = playTwo(valuesList.get(winnerI), userChoice, winnerI, -1);
+            if (winnerI == -1) {
+                makeToast("You win!" + msgWinner);
+            } else {
+                makeToast("You lost!" + msgWinner);
+            }
+        }
+
+    }
+
+    public int playTwo(int currentWinner, int opponent, int currentWinnerI, int opponentI) {
+
+        if (currentWinner == ROCK && opponent == SCISSORS) {
+            msgWinner = "Rock crushes scissors!";
+            return currentWinnerI;
+        } else if (currentWinner == SCISSORS && opponent == PAPER){
+            msgWinner = "Scissors cuts paper!";
+            return currentWinnerI;
+        } else if (currentWinner == PAPER && opponent == ROCK) {
+            msgWinner = "Paper eats rock!";
+            return currentWinnerI;
+        } else if (currentWinner == SCISSORS && opponent == ROCK) {
+            msgWinner = "Rock crushes scissors!";
+            return opponentI;
+        } else if (currentWinner == PAPER && opponent == SCISSORS) {
+            msgWinner = "Scissors cuts paper!";
+            return opponentI;
+        } else if (currentWinner == ROCK && opponent == PAPER) {
+            msgWinner = "Paper eats rock!";
+            return opponentI;
+        }
+        return currentWinner;
+
+    }
 
     public void playAgainstDevice() {
         Random rand = new Random();
@@ -267,10 +400,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void stopGame(View view) {
 
-        Map<String,Object> updates = new HashMap<>();
+        TextView player = findViewById(R.id.textInputUserName);
+        player.setFocusable(true);
+        player.setEnabled(true);
+
+        Map<String, Object> updates = new HashMap<>();
         updates.put(userName, FieldValue.delete());
 
-        database.update(updates)
+
+        databasePlayers.update(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -283,8 +421,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Stopping game", "Error deleting document", e);
                     }
                 });
-        TextView player = findViewById(R.id.textInputUserName);
-        player.setFocusable(false);
-        player.setEnabled(false);
+
+
     }
 }
