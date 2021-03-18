@@ -1,4 +1,4 @@
-**Documentation**
+**Documentation** </br>
 The application a solution for Rock Paper Scissors game. </br>
 The application is a multi-user play and in order to achieve this property different solutions were taken into consideration. </br>
 Firebase with Firestore database was finally chosen for the implementation. </br> 
@@ -8,11 +8,11 @@ Firebase with Firestore database was finally chosen for the implementation. </br
 After a firebase project is set up and integrated into the android project, you can run application in emulators and test its functionality. </br> 
 
 *Application layout*
-* Two participants joined </br>
+* Two participants joined </br> </br>
 ![plot](./twoParticipantsJoined.png)
-* Two participants played </br>
+* Two participants played </br> </br>
 ![plot](./twoParticipantsPlyed.png)
-* Firestore </br>
+* Firestore </br> </br>
 ![plot](./firebase.png)
 
 
