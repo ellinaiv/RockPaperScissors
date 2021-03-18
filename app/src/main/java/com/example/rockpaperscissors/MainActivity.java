@@ -1,6 +1,7 @@
 package com.example.rockpaperscissors;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -17,12 +18,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
@@ -43,8 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
     int userChoice;
 
-    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    DocumentReference database;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    String lastUpdate;
+    DocumentSnapshot updatedSnapshot;
 
 
     @Override
@@ -53,16 +57,65 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        database = db.collection("game").document("players");
+
+        database.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("Listen to updates", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    lastUpdate = snapshot.toString();
+                    updatedSnapshot = snapshot;
+                    Log.d("Listen to updates", "Current data: " + snapshot.getData().toString());
+                    notifyNewJoined(snapshot);
+                } else {
+                    Log.d("Listen to updates", "Current data: null");
+                    makeToast("You are the first, let's wait for participants!:)");
+                }
+            }
+        });
+
+
+    }
+
+    public void notifyNewJoined(DocumentSnapshot update) {
+        Log.d("Notify new join", "Current data: " + update);
+        Map data = updatedSnapshot.getData();
+
+        if ( data.size() == 0 ) return;
+
+        String msg = "Players in the game ";
+        for (Object player : data.keySet()){
+            msg += " " + player + " ";
+        }
+        makeToast(msg);
+
+
+    }
+
+    public void makeToast(String msg) {
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+        toast.show();
+
     }
 
     public void joinUser(String username) {
+
+
         Map<String, Object> data = new HashMap<>();
-        data.put("name", username);
         data.put("paused", false);
-        db.collection("players").document(username).set(data, SetOptions.merge());
+
+        Map<String, Object> newEntry = new HashMap<>();
+        newEntry.put(username, data);
+        db.collection("game").document("players").set(newEntry, SetOptions.merge());
 
 
-        DocumentReference docRef = db.collection("players").document("Ellina");
+        DocumentReference docRef = db.collection("game").document("players");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -70,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("onComplete", "DocumentSnapshot data: " + document.getData());
+
                     } else {
                         Log.d("onComplete", "No such document");
                     }
@@ -86,10 +140,18 @@ public class MainActivity extends AppCompatActivity {
 
         TextView player = findViewById(R.id.textInputUserName);
         userName = player.getText().toString();
+
+
         if (userName.length() == 0) {
             Toast toast = Toast.makeText(this, "Please enter you name first", Toast.LENGTH_LONG);
             toast.show();
-        } else {
+        } else if (lastUpdate.contains(userName)) {
+            makeToast("This username is taken, please choose another one!");
+
+        }else {
+            player.setFocusable(false);
+            player.setEnabled(false);
+
             joinUser(userName);
             View gameChoices = findViewById(R.id.gameChoices);
             gameChoices.setVisibility(View.VISIBLE);
@@ -202,10 +264,27 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
     }
 
-    public void notifyUser(String msg) {
 
-        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
-        toast.show();
+    public void stopGame(View view) {
 
+        Map<String,Object> updates = new HashMap<>();
+        updates.put(userName, FieldValue.delete());
+
+        database.update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Stopping game", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Stopping game", "Error deleting document", e);
+                    }
+                });
+        TextView player = findViewById(R.id.textInputUserName);
+        player.setFocusable(false);
+        player.setEnabled(false);
     }
 }

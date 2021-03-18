@@ -19,20 +19,20 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gameChoices"
-        android:layout_width="335dp"
-        android:layout_height="360dp"
+        android:layout_width="345dp"
+        android:layout_height="321dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputUserName"
-        app:layout_constraintVertical_bias="0.616">
+        app:layout_constraintVertical_bias="0.678">
 
         <ImageView
             android:id="@+id/imageViewPaper"
             android:layout_width="111dp"
             android:layout_height="108dp"
-            android:layout_marginTop="76dp"
+            android:layout_marginTop="28dp"
             android:onClick="choosePaper"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,11 +81,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:text="@string/btn_start"
+        android:layout_marginEnd="68dp"
+        android:layout_marginRight="68dp"
         android:onClick="startGame"
+        android:text="@string/btn_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputUserName" />
+
+    <Button
+        android:id="@+id/buttonPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Pause"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.656"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonPlay" />
+
+    <Button
+        android:id="@+id/buttonFinish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="stopGame"
+        android:text="Finish"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonPlay" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
