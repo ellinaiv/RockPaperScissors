@@ -1,31 +1,17 @@
 **Documentation**
-Wireless connection: WiFi P2P and Nearby APIs
+The application a solution for Rock Paper Scissors game. </br>
+The application is a multi-user play and in order to achieve this property different solutions were tried. </br>
+Firebase server/ database was finally chosen for the implementation. </br> 
 
-* P2P connections with Wi-Fi Direct
 
-* Inter device communication
 
-* Limited coverage range ?-> not specified in the task
 
-Set up: </br>
 
-1. permissions </br>
+Set up Firebase: </br>
+
+1. Create new firebase project </br>
 ```
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.nsdchat"
-    ...
-    <uses-permission
-        android:required="true"
-        android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission
-        android:required="true"
-        android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission
-        android:required="true"
-        android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission
-        android:required="true"
-        android:name="android.permission.INTERNET"/>
+https://console.firebase.google.com/u/0/project/_/database
 ```
 
 2. BroadcastReceiver </br>

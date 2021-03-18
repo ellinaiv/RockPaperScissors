@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "334633201982",
+    "project_id": "round-carver-307910",
+    "storage_bucket": "round-carver-307910.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334633201982:android:14684926177352f401bc6f",
+        "android_client_info": {
+          "package_name": "com.example.rockpaperscissors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334633201982-gqq11nrk9vau81hmnajpfd7a8ch34qma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvrBVn7DmCD8Ta7Xi4DuoEXx5A1ozRuiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334633201982-gqq11nrk9vau81hmnajpfd7a8ch34qma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
