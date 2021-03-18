@@ -298,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void findWinner(Map data) {
 
-
         Set keys = data.keySet();
         ArrayList<String> keysList = new ArrayList<String>(keys);
 
@@ -317,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
             if (winnerI == -1) {
                 makeToast("You win! " + msgWinner);
             } else {
-                makeToast("You lost! " + keysList.get(winnerI) + " wins!" + msgWinner);
+                makeToast("You lost! " + keysList.get(winnerI) + " wins! " + msgWinner);
             }
         }
         removeMyData(databaseChoices);
@@ -368,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
     public void stopGame(View view) {
 
         TextView player = findViewById(R.id.textInputUserName);
+        player.setText("");
         player.setFocusable(true);
         player.setEnabled(true);
 
@@ -380,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, Object> updates = new HashMap<>();
         updates.put(userName, FieldValue.delete());
-        makeToast(msgWinner);
         database.update(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
