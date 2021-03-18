@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     final int PAPER = 2;
 
     ImageView clickedBtn;
-    ImageView deviceBtn;
 
     int userChoice;
     int currentNrOfPlayers;
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 if (snapshot != null && snapshot.exists()) {
                     lastUpdatePlayers = snapshot.toString();
                     updatedSnapshotPlayers = snapshot;
-                    // Log.d("Listen to updates", "Current data: " + snapshot.getData().toString());
+                    Log.d("Listen to updates", "Current data: " + snapshot.getData().toString());
                     notifyNewJoined(snapshot);
                 } else {
                     Log.d("Listen to updates", "Current data: null");
@@ -111,10 +110,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void notifyNewJoined(DocumentSnapshot update) {
-        Log.d("Notify new join", "Current data: " + update);
         Map data = updatedSnapshotPlayers.getData();
         currentNrOfPlayers = data.size();
-        Log.d("Players ", Integer.toString(data.size()));
         if (data.size() == 0) return;
 
         String msg = "Players in the game ";
@@ -125,10 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void notifyPlayerMoved(DocumentSnapshot update) {
-        Log.d("A player moved ", "Current data: " + update);
         Map data = updatedSnapshotChoices.getData();
-        Log.d("Number of moves ", Integer.toString(data.size()));
-        Log.d("Moves", data.toString());
 
         int currentNrOfMoves = data.size();
 
