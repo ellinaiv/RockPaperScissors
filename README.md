@@ -1,7 +1,6 @@
 **Documentation** </br>
-The application a solution for Rock Paper Scissors game. </br>
-The application is a multi-user play and in order to achieve this property different solutions were taken into consideration. </br>
-Firebase with Firestore database was finally chosen for the implementation. </br> 
+The application is a solution for Rock Paper Scissors game devolped in Android Studio. </br>
+The application is a multi-user game and in order to achieve Firebase with Firestore database is chosen. </br> 
 
 [Read more about firebase]( https://console.firebase.google.com/ )
 
