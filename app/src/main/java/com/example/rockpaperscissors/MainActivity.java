@@ -34,7 +34,6 @@ import java.util.Random;
 import java.util.Set;
 
 
-
 public class MainActivity extends AppCompatActivity {
     // Game logic support
     String userName;
@@ -305,6 +304,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         Set keys = data.keySet();
+        ArrayList<String> keysList = new ArrayList<String>(keys);
+
         Collection values = data.values();
         ArrayList<Integer> valuesList = new ArrayList<Integer>(values);
 
@@ -318,9 +319,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             winnerI = playTwo(valuesList.get(winnerI), userChoice, winnerI, -1);
             if (winnerI == -1) {
-                makeToast("You win!" + msgWinner);
+                makeToast("You win! " + msgWinner);
             } else {
-                makeToast("You lost!" + msgWinner);
+                makeToast("You lost! " + keysList.get(winnerI) + " wins!" + msgWinner);
             }
         }
 
@@ -331,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentWinner == ROCK && opponent == SCISSORS) {
             msgWinner = "Rock crushes scissors!";
             return currentWinnerI;
-        } else if (currentWinner == SCISSORS && opponent == PAPER){
+        } else if (currentWinner == SCISSORS && opponent == PAPER) {
             msgWinner = "Scissors cuts paper!";
             return currentWinnerI;
         } else if (currentWinner == PAPER && opponent == ROCK) {
@@ -352,49 +353,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void playAgainstDevice() {
+
         Random rand = new Random();
         int deviceChoice = rand.nextInt(3);
 
-        switch (deviceChoice) {
-            case ROCK:
-                deviceBtn = findViewById(R.id.imageViewRock);
-            case PAPER:
-                deviceBtn = findViewById(R.id.imageViewPaper);
-            case SCISSORS:
-                deviceBtn = findViewById(R.id.imageViewScissors);
-
+        int res = playTwo(deviceChoice, userChoice, 0, 1);
+        if (res == 0) {
+            msgWinner += " You lost..";
+        } else {
+            msgWinner += " You won!";
         }
 
-        Log.d("choices", "" + userChoice + " " + deviceChoice);
-        String result = "";
-
-        if (deviceChoice == userChoice) {
-            result = "No one wins!";
-            Toast toast = Toast.makeText(this, result, Toast.LENGTH_LONG);
-            toast.show();
-            return;
-        } else if ((deviceChoice == ROCK && userChoice == SCISSORS)
-                || (deviceChoice == SCISSORS && userChoice == PAPER)
-                || (deviceChoice == PAPER && userChoice == ROCK)) {
-            result = "You lost!";
-        } else if ((deviceChoice == SCISSORS && userChoice == ROCK)
-                || (deviceChoice == PAPER && userChoice == SCISSORS)
-                || (deviceChoice == ROCK && userChoice == PAPER)) {
-            result = "You won!";
-        }
-
-        deviceBtn.setColorFilter(ContextCompat.getColor(this, R.color.red), android.graphics.PorterDuff.Mode.MULTIPLY);
-
-        new Handler().postDelayed(new Runnable() {
-
-            public void run() {
-                deviceBtn.setColorFilter(ContextCompat.getColor(MainActivity.this, R.color.teal_200), android.graphics.PorterDuff.Mode.MULTIPLY);
-            }
-        }, 1000);
-
-
-        Toast toast = Toast.makeText(this, result, Toast.LENGTH_LONG);
-        toast.show();
+        makeToast(msgWinner);
     }
 
 
