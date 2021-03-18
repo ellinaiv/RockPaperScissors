@@ -1,4 +1,4 @@
-**Documentation** </br>
+**Rock Papes Scissors** </br>
 The application is a solution for Rock Paper Scissors game developed in Android Studio. </br>
 The application is a multi-user game and in order to achieve Firebase with Firestore database is chosen. </br> 
 
