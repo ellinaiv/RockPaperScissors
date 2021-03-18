@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -141,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            findWinner(moves);
+            if (moves.size() != 0) {
+                findWinner(moves);
+            }
 
         }
 
@@ -221,8 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (userName.length() == 0) {
-            Toast toast = Toast.makeText(this, "Please enter you name first", Toast.LENGTH_LONG);
-            toast.show();
+            makeToast("Please enter you name first");
         } else if (lastUpdatePlayers != null && lastUpdatePlayers.contains(userName)) {
             makeToast("This username is taken, please choose another one!");
 
@@ -318,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
                 makeToast("You lost! " + keysList.get(winnerI) + " wins!" + msgWinner);
             }
         }
+        removeMyData(databaseChoices);
+
 
     }
 
@@ -358,7 +362,6 @@ public class MainActivity extends AppCompatActivity {
             msgWinner += " You won!";
         }
 
-        makeToast(msgWinner);
     }
 
 
@@ -368,11 +371,17 @@ public class MainActivity extends AppCompatActivity {
         player.setFocusable(true);
         player.setEnabled(true);
 
+        removeMyData(databasePlayers);
+        removeMyData(databaseChoices);
+
+    }
+
+    public void removeMyData(DocumentReference database) {
+
         Map<String, Object> updates = new HashMap<>();
         updates.put(userName, FieldValue.delete());
-
-
-        databasePlayers.update(updates)
+        makeToast(msgWinner);
+        database.update(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -385,7 +394,5 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Stopping game", "Error deleting document", e);
                     }
                 });
-
-
     }
 }
