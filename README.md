@@ -5,20 +5,14 @@ Firebase with Firestore database was finally chosen for the implementation. </br
 
 [Read more about firebase]( https://console.firebase.google.com/ )
 
-After a farebase project is set up and integrated into the android project, you can run application in emulators and test its functionality. </br> 
+After a firebase project is set up and integrated into the android project, you can run application in emulators and test its functionality. </br> 
 
 *Application layout*
-* Game start
-![plot](./startGame.png)
-* Started game
-![plot](./gameStarted.png)
-* Two participants joined
+* Two participants joined </br>
 ![plot](./twoParticipantsJoined.png)
-* Two participants played
+* Two participants played </br>
 ![plot](./twoParticipantsPlyed.png)
-* Play against device
-![plot](./playAgainstDevice.png)qq
-* Firestore 
+* Firestore </br>
 ![plot](./firebase.png)
 
 
