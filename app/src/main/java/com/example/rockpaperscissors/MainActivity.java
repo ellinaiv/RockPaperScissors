@@ -59,12 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     String msgWinner;
 
-    // TODO trigger removing of user that has been innactive for a minute
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+    public MainActivity(){
 
         databasePlayers = db.collection("game").document("players");
         databasePlayers.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -80,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     lastUpdatePlayers = snapshot.toString();
                     updatedSnapshotPlayers = snapshot;
                     Log.d("Listen to updates", "Current data: " + snapshot.getData().toString());
-                    notifyNewJoined(snapshot);
+                    notifyNewJoined();
                 } else {
                     Log.d("Listen to updates", "Current data: null");
                     makeToast("You are the first, let's wait for participants!:)");
@@ -102,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     lastUpdateChoices = snapshot.toString();
                     updatedSnapshotChoices = snapshot;
                     Log.d("Listen to updates", "Current moves data: " + snapshot.getData().toString());
-                    notifyPlayerMoved(snapshot);
+                    notifyPlayerMoved();
                 } else {
                     Log.d("Listen to updates", "Current moves data: null");
                 }
@@ -110,7 +105,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void notifyNewJoined(DocumentSnapshot update) {
+    // TODO trigger removing of user that has been innactive for a minute
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    public void notifyNewJoined() {
         Map data = updatedSnapshotPlayers.getData();
         currentNrOfPlayers = data.size();
         if (data.size() == 0) return;
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         makeToast(msg);
     }
 
-    public void notifyPlayerMoved(DocumentSnapshot update) {
+    public void notifyPlayerMoved() {
         Map data = updatedSnapshotChoices.getData();
 
         int currentNrOfMoves = data.size();

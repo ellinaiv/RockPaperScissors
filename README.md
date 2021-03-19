@@ -6,13 +6,6 @@ The application is a multi-user game and Firebase with Firestore database is cho
 
 After a firebase project is set up and integrated into the android project, you can run application in emulators and test its functionality. </br> 
 
-*Application layout*
-* Two participants joined </br> </br>
-![plot](./twoParticipantsJoined.png)
-* Two participants played </br> </br>
-![plot](./twoParticipantsPlyed.png)
-* Firestore </br> </br>
-![plot](./firebase.png)
 
 
  
