@@ -1,4 +1,4 @@
-#Rock Paper Scissors </br>
+# Rock Paper Scissors </br>
 The application is an ongoing project which goal is to learn Firebase API and practise Android native developing. 
 The project is a solution for Rock Paper Scissors game and allows multi-user communication. </br>
 
@@ -11,9 +11,9 @@ The project is a solution for Rock Paper Scissors game and allows multi-user com
 - [ ] Migrate the code to MVVM  
 
 ### Tech satck
-> Java 
-> [Firebase]( https://console.firebase.google.com/ )
-> Android Studio
+* Java 
+* [Firebase]( https://console.firebase.google.com/ )
+* Android Studio
 
 ### Setup  
 You can run the application in an Android device or in a suitable emulator to test its functionality. </br>
