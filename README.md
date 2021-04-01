@@ -7,6 +7,7 @@ The project is a solution for Rock Paper Scissors game and allows multi-user com
 - [x] User registration by name
 - [x] Option "play against the device"
 - [x] Connectivity over Firebase
+- [x] Rock Paper Scissors logic 
 - [ ] Trigger dropout of users that has been inactive or has left the app
 - [ ] Migrate the code to MVVM  
 
